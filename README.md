@@ -1,1 +1,1 @@
-techynabil.tk ⚡
+https://techynabil.tk ⚡
