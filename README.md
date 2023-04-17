@@ -1,1 +1,1 @@
-https://techynabil.tk ⚡
+https://n4bi10p.github.io ⚡
