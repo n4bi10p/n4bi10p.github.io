@@ -1,1 +1,1 @@
-https://n4bi10p.github.io ⚡
+https://n4bi10p.me ⚡
