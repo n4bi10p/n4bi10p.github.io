@@ -1,0 +1,57 @@
+/* Modern Anime-Inspired Dark Theme Background */
+.anime-bg {
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #0D1117 0%, #161B22 50%, #21262D 100%);
+    animation: backgroundFlow 25s ease-in-out infinite;
+}
+
+@keyframes backgroundFlow {
+    0%, 100% {
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+            linear-gradient(135deg, #0D1117 0%, #161B22 50%, #21262D 100%);
+    }
+    33% {
+        background: 
+            radial-gradient(circle at 70% 30%, rgba(168, 85, 247, 0.2) 0%, transparent 50%),
+            radial-gradient(circle at 30% 70%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
+            radial-gradient(circle at 60% 60%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+            linear-gradient(135deg, #161B22 0%, #21262D 50%, #0D1117 100%);
+    }
+    66% {
+        background: 
+            radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 10% 90%, rgba(236, 72, 153, 0.25) 0%, transparent 50%),
+            radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+            linear-gradient(135deg, #21262D 0%, #0D1117 50%, #161B22 100%);
+    }
+}
+
+.anime-particles {
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(168, 85, 247, 0.02) 2px,
+            rgba(168, 85, 247, 0.02) 4px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(6, 182, 212, 0.02) 2px,
+            rgba(6, 182, 212, 0.02) 4px
+        );
+    animation: particleShift 20s linear infinite;
+}
+
+@keyframes particleShift {
+    0% { background-position: 0px 0px, 0px 0px; }
+    100% { background-position: 50px 50px, -50px -50px; }
+}

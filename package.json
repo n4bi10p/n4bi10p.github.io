@@ -1,0 +1,28 @@
+{
+  "name": "nabil-portfolio-terminal",
+  "version": "1.0.0",
+  "description": "A modern terminal-inspired portfolio website with Hyperland aesthetics and anime vibes",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 3000",
+    "build": "echo 'No build process needed for static site'",
+    "serve": "python -m http.server 8080"
+  },
+  "keywords": [
+    "portfolio",
+    "terminal",
+    "cybersecurity",
+    "hyperland",
+    "anime",
+    "cyberpunk",
+    "responsive"
+  ],
+  "author": "Nabil",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

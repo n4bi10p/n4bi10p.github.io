@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <!--
+    ================================================================================
+    PROPRIETARY PORTFOLIO - ALL RIGHTS RESERVED
+    Copyright (c) 2025 Nabil (n4bi10p)
+    
+    This portfolio and all associated code is protected by proprietary license.
+    Copying, forking, modification, or redistribution is strictly prohibited.
+    
+    Unauthorized use may result in legal action and DMCA takedowns.
+    Contact: n4bi10p@gmail.com for licensing inquiries.
+    ================================================================================
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nabil@portfolio ~ Terminal</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Fira Code', 'Menlo', 'Monaco', 'monospace'],
+                    },
+                    colors: {
+                        'anime-purple': '#8B5CF6',
+                        'anime-pink': '#EC4899',
+                        'anime-blue': '#3B82F6',
+                        'terminal-bg': '#0D1117',
+                        'terminal-border': '#30363D',
+                        'text-primary': '#F0F6FC',
+                        'text-secondary': '#8B949E',
+                        'accent-purple': '#A855F7',
+                        'accent-cyan': '#06B6D4',
+                    },
+                    animation: {
+                        'cursor-blink': 'cursor-blink 1s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'fade-in': 'fade-in 0.5s ease-out',
+                        'slide-up': 'slide-up 0.3s ease-out',
+                        'glow-pulse': 'glow-pulse 2s ease-in-out infinite alternate',
+                        'text-shimmer': 'text-shimmer 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'cursor-blink': {
+                            '0%, 50%': { opacity: '1' },
+                            '51%, 100%': { opacity: '0' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'fade-in': {
+                            'from': { opacity: '0', transform: 'translateY(20px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'slide-up': {
+                            'from': { transform: 'translateY(100%)', opacity: '0' },
+                            'to': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        'glow-pulse': {
+                            'from': { 'box-shadow': '0 0 20px rgba(168, 85, 247, 0.4)' },
+                            'to': { 'box-shadow': '0 0 40px rgba(168, 85, 247, 0.8), 0 0 60px rgba(6, 182, 212, 0.4)' },
+                        },
+                        'text-shimmer': {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/background.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #21262D 100%);
+            overflow-x: hidden;
+            transition: all 0.8s ease-in-out;
+        }
+        
+        .terminal-window {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(48, 54, 61, 0.8);
+            box-shadow: 
+                0 0 30px rgba(168, 85, 247, 0.3),
+                0 0 60px rgba(6, 182, 212, 0.2),
+                inset 0 0 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.8s ease-in-out;
+        }
+        
+        /* Smooth transitions for theme switching */
+        * {
+            transition: background-color 0.8s ease-in-out, 
+                       color 0.8s ease-in-out, 
+                       border-color 0.8s ease-in-out,
+                       box-shadow 0.8s ease-in-out;
+        }
+        
+        .anime-glow {
+            text-shadow: 
+                0 0 10px currentColor,
+                0 0 20px currentColor,
+                0 0 30px currentColor;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #A855F7, #EC4899, #06B6D4, #10B981);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: text-shimmer 3s ease-in-out infinite;
+        }
+        
+        .terminal-prompt {
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        
+        .command-input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        #command-input {
+            caret-color: transparent;
+        }
+        
+        #input-display {
+            white-space: pre;
+        }
+        
+        #command-input {
+            line-height: 1.5;
+            height: 1.5rem;
+            padding: 0;
+            margin: 0;
+            font-size: inherit;
+            vertical-align: baseline;
+        }
+        
+        #command-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        #command-input::placeholder {
+            color: rgba(139, 148, 158, 0.4);
+            font-style: italic;
+        }
+        
+        .anime-character {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .command-output {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .terminal-prompt {
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        
+        .scrollbar-anime::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scrollbar-anime::-webkit-scrollbar-track {
+            background: rgba(13, 17, 23, 0.5);
+            border-radius: 4px;
+        }
+        
+        .scrollbar-anime::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #A855F7, #EC4899);
+            border-radius: 4px;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        
+        .scrollbar-anime::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #9333EA, #DB2777);
+        }
+        
+        .window-controls {
+            background: rgba(48, 54, 61, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .typing-indicator::after {
+            content: '▋';
+            color: #A855F7;
+            animation: cursor-blink 1s infinite;
+        }
+        
+        .social-icon {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .social-icon:hover::before {
+            left: 100%;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .social-icon {
+                transform: scale(0.9);
+            }
+        }
+        
+        .profile-section {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        .profile-section:hover {
+            transform: translateY(-2px);
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        .profile-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+        
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+        
+        .profile-section:hover .profile-image {
+            transform: scale(1.05);
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #F0F6FC;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-section {
+                top: 8px;
+                left: 8px;
+                padding: 6px 12px;
+                gap: 6px;
+                font-size: 14px;
+            }
+            
+            .profile-image {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .profile-name {
+                font-size: 14px;
+            }
+            
+            body {
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-terminal-bg text-text-primary min-h-screen overflow-hidden relative">
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-image">
+            <img src="assets/kitty.jpg" alt="Nabil" />
+        </div>
+        <div class="profile-name">Nabil</div>
+    </div>
+    
+    <!-- Animated Background -->
+    <div class="fixed inset-0 anime-bg"></div>
+    <div class="fixed inset-0 anime-particles"></div>
+    
+    <!-- Floating Anime Characters -->
+    <div id="anime-characters" class="fixed inset-0 pointer-events-none z-0"></div>
+    
+    <!-- Main Terminal Container -->
+    <div class="relative z-10 min-h-screen p-2 md:p-8 flex items-center justify-center">
+        <div class="w-full max-w-5xl mx-auto animate-fade-in px-2 md:px-0">
+            <!-- Terminal Window -->
+            <div class="terminal-window rounded-xl overflow-hidden shadow-2xl animate-glow-pulse">
+                <!-- Terminal Header -->
+                <div class="window-controls px-4 py-3 border-b border-terminal-border/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-red-500 rounded-full hover:bg-red-400 transition-all duration-200 cursor-pointer shadow-lg"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-400 transition-all duration-200 cursor-pointer shadow-lg"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full hover:bg-green-400 transition-all duration-200 cursor-pointer shadow-lg"></div>
+                        </div>
+                        <div class="text-sm text-text-secondary font-medium anime-glow hidden md:block">
+                            <span class="gradient-text font-bold">nabil@portfolio</span> ~ Terminal
+                        </div>
+                        <div class="text-xs text-text-secondary" id="current-time"></div>
+                    </div>
+                </div>
+                
+                <!-- Terminal Body -->
+                <div class="p-3 md:p-6 space-y-3 md:space-y-4 relative">
+                    <!-- Mobile Header -->
+                    <div class="md:hidden text-center mb-4">
+                        <div class="text-lg gradient-text font-bold anime-glow">
+                            NABIL.SH
+                        </div>
+                        <div class="text-xs text-accent-cyan">Hackers Terminal</div>
+                    </div>
+                    
+                    <!-- Welcome Message with Animation -->
+                    <div class="mb-4 md:mb-6 animate-slide-up text-center">
+                        <!-- Centered Image -->
+                        <div class="mb-3 md:mb-4 flex justify-center">
+                            <img src="assets/profile.jpg" alt="Nabil" class="w-16 h-16 md:w-24 md:h-24 rounded-full border-2 border-anime-purple shadow-lg hover:scale-105 transition-transform duration-300" />
+                        </div>
+                        
+                        <div class="text-accent-cyan text-sm md:text-lg font-medium px-2">
+                            <span class="gradient-text">Welcome to Nabil's Portfolio Terminal</span> 🥱 
+                        </div>
+                        <div class="text-text-secondary text-xs md:text-sm mt-2 px-2">
+                            🎌 Type <span class="text-anime-purple font-semibold">'help'</span> or <span class="text-anime-purple font-semibold">'ls'</span> to explore commands
+                        </div>
+                    </div>
+                    
+                    <!-- Command History -->
+                    <div class="scrollbar-anime space-y-2 h-64 md:h-96 overflow-y-auto p-1 md:p-2" id="terminal-output">
+                        <!-- Centered GIF in empty space -->
+                        <div class="flex items-center justify-center h-full">
+                            <div class="text-center">
+                                <img src="assets/ichigo.gif" alt="Cool Animation" 
+                                     class="w-32 h-32 md:w-56 md:h-56 rounded-lg md:rounded-xl border-2 border-anime-purple/50 shadow-2xl hover:scale-105 transition-all duration-300 mx-auto mb-2 md:mb-4" />
+                                <div class="text-anime-purple/70 text-xs md:text-sm font-medium">
+                                    ✨ Ready for commands ✨
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Commands will be dynamically added here -->
+                    </div>
+                    
+                    <!-- Current Command Input -->
+                    <div class="terminal-prompt text-sm md:text-base">
+                        <span class="text-accent-purple font-bold">nabil</span>
+                        <span class="text-text-secondary">@</span>
+                        <span class="text-anime-blue font-semibold">portfolio</span>
+                        <span class="text-text-secondary">:</span>
+                        <span class="text-accent-cyan">~</span>
+                        <span class="text-anime-pink font-bold">$</span>
+                        <div class="command-input-wrapper relative inline-flex items-center flex-1">
+                            <span id="input-display" class="text-text-primary font-mono"></span>
+                            <span id="terminal-cursor" class="terminal-cursor"></span>
+                            <input 
+                                type="text" 
+                                id="command-input" 
+                                class="absolute inset-0 bg-transparent border-none outline-none text-transparent font-mono w-full caret-transparent"
+                                placeholder=""
+                                autocomplete="off"
+                                spellcheck="false"
+                                autocapitalize="off"
+                                autocorrect="off"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Helper -->
+            <div class="md:hidden text-center mt-4 text-text-secondary text-sm animate-fade-in">
+                💡 Tap terminal • Type commands • Have fun! 🎮
+            </div>
+            
+            <!-- Social Media Icons -->
+            <div class="flex justify-center items-center space-x-6 mt-6 animate-fade-in">
+                <!-- Email -->
+                <a href="mailto:n4bi10p@gmail.com" target="_blank" rel="noopener noreferrer" 
+                   class="social-icon group hover:scale-110 transition-all duration-300">
+                    <div class="p-3 bg-gradient-to-br from-anime-purple/20 to-anime-pink/20 rounded-xl border border-anime-purple/30 hover:border-anime-purple/60 backdrop-blur-sm hover:shadow-lg hover:shadow-anime-purple/25">
+                        <svg class="w-6 h-6 text-anime-purple group-hover:text-anime-pink transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                </a>
+                
+                <!-- Telegram -->
+                <a href="https://t.me/n4bi10p" target="_blank" rel="noopener noreferrer" 
+                   class="social-icon group hover:scale-110 transition-all duration-300">
+                    <div class="p-3 bg-gradient-to-br from-anime-blue/20 to-accent-cyan/20 rounded-xl border border-anime-blue/30 hover:border-anime-blue/60 backdrop-blur-sm hover:shadow-lg hover:shadow-anime-blue/25">
+                        <svg class="w-6 h-6 text-anime-blue group-hover:text-accent-cyan transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                        </svg>
+                    </div>
+                </a>
+                
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com/in/n4bi10p" target="_blank" rel="noopener noreferrer" 
+                   class="social-icon group hover:scale-110 transition-all duration-300">
+                    <div class="p-3 bg-gradient-to-br from-accent-cyan/20 to-anime-blue/20 rounded-xl border border-accent-cyan/30 hover:border-accent-cyan/60 backdrop-blur-sm hover:shadow-lg hover:shadow-accent-cyan/25">
+                        <svg class="w-6 h-6 text-accent-cyan group-hover:text-anime-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </div>
+                </a>
+                
+                <!-- GitHub -->
+                <a href="https://github.com/n4bi10p" target="_blank" rel="noopener noreferrer" 
+                   class="social-icon group hover:scale-110 transition-all duration-300">
+                    <div class="p-3 bg-gradient-to-br from-anime-pink/20 to-accent-purple/20 rounded-xl border border-anime-pink/30 hover:border-anime-pink/60 backdrop-blur-sm hover:shadow-lg hover:shadow-anime-pink/25">
+                        <svg class="w-6 h-6 text-anime-pink group-hover:text-accent-purple transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Glitch Overlay -->
+    <div id="glitch-overlay" class="fixed inset-0 bg-red-500/20 backdrop-blur-sm z-40 hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="text-4xl md:text-6xl text-red-400 font-bold animate-pulse" data-text="ACCESS DENIED">
+                ⚠️ ACCESS DENIED ⚠️
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="scripts/cli.js"></script>
+</body>
+</html>
