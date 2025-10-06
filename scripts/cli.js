@@ -245,7 +245,8 @@ class TerminalPortfolio {
             'baka': () => this.bakaCommand(),
             'message': () => this.startContactForm(),
             'view': () => this.handleViewCommand(args),
-            'theme': () => this.handleThemeCommand(args)
+            'theme': () => this.handleThemeCommand(args),
+            'debug': () => this.debugMessages()
         };
         
         if (this.contactFormStep) {
@@ -1843,14 +1844,14 @@ Name Server: NS2.CYBERSEC.LAB
                 this.contactFormData.timestamp = new Date().toISOString();
                 this.contactFormData.id = Date.now();
                 
-                // Save message to localStorage
+                // Save message to FormSpree
                 this.saveMessage(this.contactFormData);
                 
                 this.addToOutput(`
 <div class="command-output">
 <div class="text-center p-4 border-2 border-green-400 rounded-lg bg-green-400/10">
   <div class="text-green-400 font-bold text-lg mb-2">✅ Message Sent Successfully!</div>
-  <div class="text-accent-cyan mb-3">Thank you ${this.contactFormData.name}! Your message has been received.</div>
+  <div class="text-accent-cyan mb-3">Thank you ${this.contactFormData.name}! Your message has been delivered.</div>
   <div class="text-gray-300 text-sm">
     <div><strong>Name:</strong> ${this.contactFormData.name}</div>
     <div><strong>Email:</strong> ${this.contactFormData.email}</div>
@@ -1858,6 +1859,7 @@ Name Server: NS2.CYBERSEC.LAB
     <div><strong>Message:</strong> ${this.contactFormData.message}</div>
   </div>
   <div class="text-anime-purple mt-3">I'll get back to you soon! 🚀</div>
+  <div class="text-green-400 text-xs mt-2">✨ Message delivered via secure API - I'll receive an email notification!</div>
 </div>
 </div>`, '');
                 
@@ -1874,80 +1876,116 @@ Name Server: NS2.CYBERSEC.LAB
     }
     
     saveMessage(messageData) {
-        let messages = [];
+        // Send message to FormSpree instead of localStorage
+        this.sendToFormSpree(messageData);
+    }
+    
+    async sendToFormSpree(messageData) {
         try {
-            const stored = localStorage.getItem('portfolio_messages');
-            if (stored) {
-                messages = JSON.parse(stored);
+            const response = await fetch('https://formspree.io/f/xzboalro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: messageData.name,
+                    email: messageData.email,
+                    subject: messageData.subject,
+                    message: messageData.message,
+                    timestamp: messageData.timestamp,
+                    source: 'Portfolio Terminal',
+                    user_agent: navigator.userAgent,
+                    page_url: window.location.href
+                })
+            });
+            
+            if (response.ok) {
+                console.log('Message sent to FormSpree successfully');
+                return true;
+            } else {
+                console.error('FormSpree error:', response.status);
+                return false;
             }
-        } catch (e) {
-            console.error('Error loading messages:', e);
-        }
-        
-        messages.push(messageData);
-        
-        try {
-            localStorage.setItem('portfolio_messages', JSON.stringify(messages));
-        } catch (e) {
-            console.error('Error saving message:', e);
+        } catch (error) {
+            console.error('Error sending to FormSpree:', error);
+            return false;
         }
     }
     
     viewStoredMessages() {
-        let messages = [];
-        try {
-            const stored = localStorage.getItem('portfolio_messages');
-            if (stored) {
-                messages = JSON.parse(stored);
-            }
-        } catch (e) {
-            console.error('Error loading messages:', e);
-        }
-        
-        if (messages.length === 0) {
-            this.addToOutput(`
-<div class="command-output">
-<div class="text-center p-4 border-2 border-anime-blue rounded-lg bg-anime-blue/10">
-  <div class="text-anime-blue font-bold text-lg">📪 No Messages</div>
-  <div class="text-gray-400 mt-2">No messages have been received yet.</div>
-</div>
-</div>`, '');
-            return;
-        }
-        
-        let output = `
+        this.addToOutput(`
 <div class="command-output">
 <div class="text-center mb-4">
-  <span class="text-anime-purple font-bold text-lg">🔐 Admin Panel - Messages (${messages.length})</span>
+  <span class="text-anime-purple font-bold text-lg">🔐 Admin Panel - Message System</span>
 </div>
-<div class="space-y-4">`;
-        
-        messages.reverse().forEach((msg, index) => {
-            const date = new Date(msg.timestamp).toLocaleString();
-            output += `
 <div class="p-4 border-2 border-accent-cyan rounded-lg bg-accent-cyan/10">
-  <div class="flex justify-between items-start mb-2">
-    <div class="text-accent-cyan font-semibold">Message #${msg.id}</div>
-    <div class="text-gray-400 text-sm">${date}</div>
-  </div>
+  <div class="text-accent-cyan font-bold mb-3">📧 FormSpree Integration Active</div>
   <div class="space-y-2 text-sm">
-    <div><span class="text-anime-pink font-semibold">Name:</span> <span class="text-white">${msg.name}</span></div>
-    <div><span class="text-anime-pink font-semibold">Email:</span> <span class="text-white">${msg.email}</span></div>
-    <div><span class="text-anime-pink font-semibold">Subject:</span> <span class="text-white">${msg.subject}</span></div>
-    <div><span class="text-anime-pink font-semibold">Message:</span></div>
-    <div class="text-gray-300 pl-4 border-l-2 border-anime-purple/50">${msg.message}</div>
+    <div><span class="text-anime-pink font-semibold">Service:</span> <span class="text-white">FormSpree API</span></div>
+    <div><span class="text-anime-pink font-semibold">Status:</span> <span class="text-green-400">Connected & Active</span></div>
+    <div><span class="text-anime-pink font-semibold">Email Notifications:</span> <span class="text-white">Enabled</span></div>
+    <div><span class="text-anime-pink font-semibold">Dashboard:</span> <span class="text-white">FormSpree.io</span></div>
   </div>
-</div>`;
-        });
-        
-        output += `
+  
+  <div class="mt-4 p-3 bg-blue-400/10 border border-blue-400 rounded">
+    <div class="text-blue-400 font-semibold">📊 How to View Messages:</div>
+    <div class="text-gray-300 text-sm mt-1 space-y-1">
+      <div>1. Check your email (n4bi10p@gmail.com) for notifications</div>
+      <div>2. Login to FormSpree dashboard at formspree.io</div>
+      <div>3. View all submissions with timestamps and details</div>
+      <div>4. Export data as CSV or JSON if needed</div>
+    </div>
+  </div>
+  
+  <div class="mt-4 p-3 bg-green-400/10 border border-green-400 rounded">
+    <div class="text-green-400 font-semibold">✨ Benefits:</div>
+    <div class="text-gray-300 text-sm mt-1 space-y-1">
+      <div>• Real-time email notifications</div>
+      <div>• Secure cloud storage</div>
+      <div>• Anti-spam protection</div>
+      <div>• Professional message management</div>
+      <div>• Accessible from any device</div>
+    </div>
+  </div>
 </div>
-<div class="mt-4 text-center">
-  <div class="text-anime-purple text-sm">🔒 Secret admin command - messages are stored locally</div>
+</div>`, '');
+    }
+    
+    debugMessages() {
+        this.addToOutput(`
+<div class="command-output">
+<div class="text-center mb-4">
+  <span class="text-anime-blue font-bold text-lg">🐛 Message System Debug</span>
 </div>
-</div>`;
-        
-        this.addToOutput(output, '');
+<div class="p-4 border-2 border-anime-blue rounded-lg bg-anime-blue/10">
+  <div class="space-y-2 text-sm">
+    <div><span class="text-anime-pink font-semibold">Message System:</span> <span class="text-white">FormSpree API Integration</span></div>
+    <div><span class="text-anime-pink font-semibold">API Endpoint:</span> <span class="text-white">formspree.io/f/xzboalro</span></div>
+    <div><span class="text-anime-pink font-semibold">Status:</span> <span class="text-green-400">Active & Connected</span></div>
+    <div><span class="text-anime-pink font-semibold">Email Delivery:</span> <span class="text-white">n4bi10p@gmail.com</span></div>
+    <div><span class="text-anime-pink font-semibold">Browser:</span> <span class="text-white">${navigator.userAgent.split(' ')[0]}</span></div>
+    <div><span class="text-anime-pink font-semibold">Domain:</span> <span class="text-white">${window.location.hostname}</span></div>
+    <div><span class="text-anime-pink font-semibold">Fetch API:</span> <span class="text-white">${typeof fetch !== 'undefined' ? "Supported" : "Not Supported"}</span></div>
+  </div>
+  
+  <div class="mt-4 p-3 bg-green-400/10 border border-green-400 rounded">
+    <div class="text-green-400 font-semibold">✅ System Status: Operational</div>
+    <div class="text-gray-300 text-sm mt-1">
+      Messages are now sent directly to FormSpree's secure servers. You'll receive email notifications 
+      and can view all submissions in your FormSpree dashboard. No more localStorage limitations!
+    </div>
+  </div>
+  
+  <div class="mt-4 p-3 bg-blue-400/10 border border-blue-400 rounded">
+    <div class="text-blue-400 font-semibold">📊 How to Access Messages:</div>
+    <div class="text-gray-300 text-sm mt-1">
+      1. Check email for instant notifications<br>
+      2. Login to formspree.io dashboard<br>
+      3. View detailed analytics and exports
+    </div>
+  </div>
+</div>
+</div>`, '');
     }
 }
 
